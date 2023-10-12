@@ -1,6 +1,5 @@
 import React, { createContext, useState } from "react";
 import axios from "axios";
-import { apiKey } from "../api/config";
 export const PhotoContext = createContext();
 
 const PhotoContextProvider = props => {
@@ -9,10 +8,12 @@ const PhotoContextProvider = props => {
   const runSearch = query => {
     axios
       .get(
-        `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`
+        `http://localhost:5000/search?term=${query}`
       )
       .then(response => {
-        setImages(response.data.photos.photo);
+        console.log(response)
+        setImages(response.data);
+        console.log(response.data)
         setLoading(false);
       })
       .catch(error => {

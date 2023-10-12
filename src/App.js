@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import PhotoContextProvider from "./context/PhotoContext";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import Header from "./components/Header";
@@ -7,12 +7,39 @@ import Search from "./components/Search";
 import NotFound from "./components/NotFound";
 
 class App extends Component {
-  // Prevent page reload, clear input, set URL and push history on submit
-  handleSubmit = (e, history, searchInput) => {
-    e.preventDefault();
-    e.currentTarget.reset();
-    let url = `/search/${searchInput}`;
-    history.push(url);
+  sortByPrice: false; // Initially not sorted by price
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      sortByPrice: false,
+      filterBySource: null,
+      uniqueSources: [],  // New state for unique sources
+    };
+  }
+
+  setUniqueSources = (sources) => {
+    console.log("Received unique sources in App:", sources);
+    this.setState({ uniqueSources: sources });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.uniqueSources !== this.state.uniqueSources) {
+        console.log("Updated uniqueSources state in App:", this.state.uniqueSources);
+    }
+  }
+
+  // Function to toggle the sorting option
+  toggleSortByPrice = () => {
+    const newSortState = !this.state.sortByPrice;
+    console.log("Toggling sortByPrice to:", newSortState);
+    //this.setState({ sortByPrice: newSortState });
+    this.setState(prevState => ({ sortByPrice: !prevState.sortByPrice }));
+  };
+
+  // Function to set the source filter
+  setFilterBySource = (source) => {
+    this.setState({ filterBySource: source });
   };
 
   render() {
@@ -21,31 +48,38 @@ class App extends Component {
         <HashRouter basename="/SnapScout">
           <div className="container">
             <Route
-              render={props => (
+              render={(props) => (
                 <Header
                   handleSubmit={this.handleSubmit}
                   history={props.history}
+                  toggleSortByPrice={this.toggleSortByPrice}
+                  setFilterBySource={this.setFilterBySource}
+                  uniqueSources={this.state.uniqueSources}  // Pass the unique sources
                 />
               )}
             />
             <Switch>
+              {/* ... (other routes) */}
               <Route
-                exact
-                path="/"
-                render={() => <Redirect to="/mountain" />}
+                path="/couches"
+                render={(props) => (
+                  <Item
+                    searchTerm="couches"
+                    sortByPrice={this.state.sortByPrice}
+                    filterBySource={this.state.filterBySource}
+                    setUniqueSources={this.setUniqueSources} // Pass the callback
+                  />
+                )}
               />
-
-              <Route
-                path="/mountain"
-                render={() => <Item searchTerm="mountain" />}
-              />
-              <Route path="/beach" render={() => <Item searchTerm="beach" />} />
-              <Route path="/bird" render={() => <Item searchTerm="bird" />} />
-              <Route path="/food" render={() => <Item searchTerm="food" />} />
               <Route
                 path="/search/:searchInput"
-                render={props => (
-                  <Search searchTerm={props.match.params.searchInput} />
+                render={(props) => (
+                  <Search
+                    searchTerm={props.match.params.searchInput}
+                    sortByPrice={this.state.sortByPrice}
+                    filterBySource={this.state.filterBySource}
+                    setUniqueSources={this.setUniqueSources} // Pass the callback
+                  />
                 )}
               />
               <Route component={NotFound} />
