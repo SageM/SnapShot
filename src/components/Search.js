@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "./Container";
 
-const Search = ({ searchTerm, sortByPrice, filterBySource }) => {
+const Search = ({ searchTerm, sortByPrice, filterBySource, setUniqueSources }) => {
   return (
     <div>
       <h2>{searchTerm} Images</h2>
@@ -10,6 +10,7 @@ const Search = ({ searchTerm, sortByPrice, filterBySource }) => {
         searchTerm={searchTerm}
         sortByPrice={sortByPrice}
         filterBySource={filterBySource}
+        setUniqueSources={setUniqueSources}  // Pass the callback to Container
       />
     </div>
   );

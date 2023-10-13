@@ -42,6 +42,11 @@ class App extends Component {
     this.setState({ filterBySource: source });
   };
 
+  handleSubmit = (e, history, searchEntry) => {
+    e.preventDefault();  // Prevent the default form submission
+    history.push(`/search/${searchEntry}`);  // Navigate to the search results page
+  }
+
   render() {
     return (
       <PhotoContextProvider>
@@ -55,11 +60,11 @@ class App extends Component {
                   toggleSortByPrice={this.toggleSortByPrice}
                   setFilterBySource={this.setFilterBySource}
                   uniqueSources={this.state.uniqueSources}  // Pass the unique sources
+                  setUniqueSources={this.setUniqueSources} // Pass the callback
                 />
               )}
             />
             <Switch>
-              {/* ... (other routes) */}
               <Route
                 path="/couches"
                 render={(props) => (
@@ -71,6 +76,40 @@ class App extends Component {
                   />
                 )}
               />
+              <Route
+                path="/chairs"
+                render={(props) => (
+                  <Item
+                    searchTerm="chairs"
+                    sortByPrice={this.state.sortByPrice}
+                    filterBySource={this.state.filterBySource}
+                    setUniqueSources={this.setUniqueSources} // Pass the callback
+                  />
+                )}
+              />
+              <Route
+                path="/lightbulbs"
+                render={(props) => (
+                  <Item
+                    searchTerm="lightbulbs"
+                    sortByPrice={this.state.sortByPrice}
+                    filterBySource={this.state.filterBySource}
+                    setUniqueSources={this.setUniqueSources} // Pass the callback
+                  />
+                )}
+              />
+              <Route
+                path="/surpriseme"
+                render={(props) => (
+                  <Item
+                    searchTerm="fridge"
+                    sortByPrice={this.state.sortByPrice}
+                    filterBySource={this.state.filterBySource}
+                    setUniqueSources={this.setUniqueSources} // Pass the callback
+                  />
+                )}
+              />
+              
               <Route
                 path="/search/:searchInput"
                 render={(props) => (
